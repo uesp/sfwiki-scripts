@@ -1,0 +1,33 @@
+#
+#
+#
+#
+
+name = sfwiki.scripts
+description = Collection of various scripts used by the Starfield Wiki
+repository = https://github.com/uesp/sfwiki-scripts
+backup = false
+backuppath = /deploytmp/
+verbosity = 0
+
+ignore = *.deploy
+ignore = .hg*
+ignore = .git*
+
+dest = content1.uesp.net:/home/sfwiki/scripts/
+dest = content2.uesp.net:/home/sfwiki/scripts/
+dest = content3.uesp.net:/home/sfwiki/scripts/
+dest = files1.uesp.net:/home/sfwiki/scripts/
+dest = db1.uesp.net:/home/sfwiki/scripts/
+dest = db2.uesp.net:/home/sfwiki/scripts/
+dest = squid1.uesp.net:/home/sfwiki/scripts/
+dest = backup1.uesp.net:/home/sfwiki/scripts/
+
+chown_source = :uespadmin -R *
+
+	# Set the ownership of the destination directory 
+chown_dest = :uespadmin {dest}
+
+chmod_dest = g+rw {dest}/*
+chmod_dest = a+r {dest}/*
+

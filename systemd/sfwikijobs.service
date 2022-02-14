@@ -1,0 +1,19 @@
+[Unit]
+Description=SFWiki Job Runner
+
+[Service]
+User=apache
+Type=simple
+TimeoutSec=0
+PIDFile=/var/run/sfwikijobs.pid+
+ExecStart=/bin/bash -c 'exec /home/sfwiki/scripts/sfwiki-mwjobrunner >> /var/log/httpd/sfwikijobs.log 2>&1'
+KillMode=control-group
+
+Restart=on-failure
+RestartSec=61s
+
+StandardOutput=journal+console
+StandardError=journal+console
+
+[Install]
+WantedBy=default.target
