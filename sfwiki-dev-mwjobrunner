@@ -1,0 +1,36 @@
+#!/bin/bash
+
+IP=/home/sfwiki/dev/www/w
+RJ=$IP/maintenance/runJobs.php
+
+pushd $IP
+
+echo Starting SFWiki Dev job service...
+# Wait a bit after the server starts up to give other processes time to get started
+sleep 6
+echo Started.
+
+while true; do
+		# Job types that need to be run ASAP mo matter how many of them are in the queue
+		# Those jobs should be very "cheap" to run
+	php74 $RJ --type="enotifNotify" --memory-limit=max
+	php74 $RJ --type="htmlCacheUpdate" --maxjobs=50 --memory-limit=max
+		
+		# Everything else, limit the number of jobs on each batch
+		# The --wait parameter will pause the execution here until new jobs are added,
+		# to avoid running the loop without anything to do
+	php74 $RJ --type="webVideoTranscode" --maxjobs=5 --memory-limit=max
+	php74 $RJ --type=refreshLinksPrioritized --maxjobs=50 --memory-limit=max
+	php74 $RJ --type=refreshLinksDynamic --maxjobs=50 --memory-limit=max
+	php74 $RJ --type=refreshLinks --maxjobs=50 --memory-limit=max
+	php74 $RJ --type=recentChangesUpdate --maxjobs=50 --memory-limit=max
+	php74 $RJ --type=cirrusSearchLinksUpdate --maxjobs=50 --memory-limit=max
+	php74 $RJ --type=cirrusSearchIncomingLinkCount --maxjobs=50 --memory-limit=max
+	php74 $RJ --maxjobs=10 --memory-limit=max
+	
+		# Wait some seconds to let the CPU do other things, like handling web requests, etc
+	echo Waiting for 2 seconds...
+	sleep 1
+done
+
+popd
